@@ -29,4 +29,4 @@ print("Final Portfolio Value: %.2f" % cerebro.broker.getvalue())
 # Plot & Save
 figs = cerebro.plot(style='candlestick')
 figs[0][0].savefig('images/backtest_sma_result.png')
-print("Backtest plot saved to images/result_plot.png")
+print("Backtest plot saved to images/backtest_sma_result.png")
