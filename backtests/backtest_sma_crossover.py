@@ -7,6 +7,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from strategies.bt_sma_crossover import SmaCrossover
 from utils.akshare_data_loader import download_cn_data
+from utils.plot_saver import save_plot
+from utils.report_writer import save_analysis_report
 
 # load CSV data
 download_cn_data("600519","20220101","20230101","data/maotai_sample.csv")
@@ -19,17 +21,24 @@ cerebro.addstrategy(SmaCrossover)
 cerebro.adddata(bt_data)
 cerebro.broker.set_cash(10000)
 
-# Print initial capital
-print("Starting Portfolio Value: %.2f" % cerebro.broker.getvalue())
+# add performance analysis
+cerebro.addanalyzer(bt.analyzers.SharpeRatio, _name="sharpe")
+cerebro.addanalyzer(bt.analyzers.DrawDown, _name="drawdown")
 
 # Run backtest
-cerebro.run()
+results = cerebro.run()
+strategy = results[0]
+final_value = cerebro.broker.getvalue()
 
-# Print final capital
-print("Final Portfolio Value: %.2f" % cerebro.broker.getvalue())
+# save performance report to docs
+save_analysis_report(
+    strategy,
+    filename="sma_crossover_report.md",
+    initial_cash=10000,
+    final_value=final_value
+) 
 
 # Plot & Save
-figs = cerebro.plot(style='candlestick')
-figs[0][0].savefig('images/backtest_sma_crossover_result.png')
-print("Backtest plot saved to images/backtest_sma_crossover_result.png")
+figs = cerebro.plot(style="candlestick")
+save_plot(figs[0][0], filename="backtest_sma_crossover_result.png")
 
