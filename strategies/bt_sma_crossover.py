@@ -5,7 +5,7 @@ class SmaCrossover(bt.Strategy):
         self.sma10 = bt.indicators.MovingAverageSimple(self.data.close, period=10 )
         self.sma30 = bt.indicators.MovingAverageSimple(self.data.close, period=30 )
 
-    def __next__(self):
+    def next(self):
         if self.sma10[0] > self.sma30[0] and self.sma10[-1] < self.sma30[-1]:
             if not self.position:
                 self.buy()
